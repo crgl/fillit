@@ -17,13 +17,18 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# define TRUE 1
+# define FALSE 0
+
 typedef unsigned char	t_byte;
+
+typedef unsigned char	t_bool;
 
 typedef	struct			s_point
 {
 	t_byte		x;
 	t_byte		y;
-}
+}						t_point;
 
 typedef enum			e_type
 {
