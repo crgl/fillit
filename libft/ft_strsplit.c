@@ -12,6 +12,15 @@
 
 #include "libft.h"
 
+static void	free_content(char **sarray, size_t ct)
+{
+	if (ct == 0)
+		return ;
+	while (--ct)
+		free(sarray[ct]);
+	free(sarray[ct]);
+}
+
 static char	**lcl_strbits(char *dst, char const *s, char c)
 {
 	size_t	i;
@@ -45,13 +54,13 @@ static int	lcl_strarray(char **output, char *temp, char const *s, char c)
 		while (s[i] == c)
 			i++;
 		if (s[i] == '\0')
-		{
-			output[j] = NULL;
-			return (0);
-		}
+			break ;
 		output[j] = ft_strdup(temp + i);
 		if (output[j] == NULL)
+		{
+			free_content(output, j);
 			return (1);
+		}
 		while (s[i] != c && s[i] != '\0')
 			i++;
 		j++;
@@ -74,7 +83,11 @@ char		**ft_strsplit(char const *s, char c)
 	if (output == NULL)
 		return (NULL);
 	if (lcl_strarray(output, temp, s, c) != 0)
+	{
+		free(temp);
+		free(output);
 		return (NULL);
-	ft_strdel(&temp);
+	}
+	free(temp);
 	return (output);
 }

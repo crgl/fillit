@@ -18,6 +18,8 @@ char	*ft_strtrim(char const *s)
 	char	*strim;
 
 	i = 0;
+	if (s == NULL)
+		return (NULL);
 	while ((*s == ' ' || *s == '\t' || *s == '\n') && *s != '\0')
 		s++;
 	while (s[i] != '\0')
