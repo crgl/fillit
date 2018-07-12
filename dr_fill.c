@@ -158,8 +158,11 @@ t_piece	*filet(int fd)
 void	fillit(int fd)
 {
 	t_piece	*tetrimini;
+	char	*box;
 
 	tetrimini = filet(fd);
+	box = layer_of_eggs(tetrimini);
+	ft_putstr(box);
 	close(fd);
 }
 
