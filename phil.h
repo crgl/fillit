@@ -60,7 +60,7 @@ typedef struct			s_piece
 	t_point		b[4];
 }						t_piece;
 
-global s_piece[]	g_piece = {
+t_piece					g_piece[] = {
 	{1, 4, {{0, 0}, {0, 1}, {0, 2}, {0, 3}}},
 	{4, 1, {{0, 0}, {1, 0}, {2, 0}, {3, 0}}},
 	{2, 2, {{0, 0}, {0, 1}, {1, 0}, {1, 1}}},
