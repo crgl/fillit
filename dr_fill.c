@@ -18,11 +18,35 @@ void	display_usage(void)
 	ft_putendl("usage: ./fillit tetrimino_list.fillit");
 }
 
+t_piece	parse_piece(int fd)
+{
+	return (g_piece[NA])
+}
+
 t_piece	*filet(int fd)
 {
-	fd++;
-	fd--;
-	return (NULL);
+	t_piece	temp[26];
+	size_t	i;
+
+	i = 0;
+	while (input = parse_piece(fd))
+		temp[i++] = input;
+	if (i == 0)
+		return (NULL)
+	output = (t_piece *)malloc((i + 1) * sizeof(t_piece));
+	output[i] = g_piece[NA];
+	while   (i)
+	{
+		i--;
+		if (!(temp[i]))
+		{
+			free(output);
+			return (NULL);
+		}
+		output[i] = temp[i];
+	}
+	
+	return (output);
 }
 
 void	fillit(int fd)
