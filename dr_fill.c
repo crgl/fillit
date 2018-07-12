@@ -20,13 +20,14 @@ void	display_usage(void)
 
 t_piece	parse_piece(int fd)
 {
-	return (g_piece[NA])
+	return (g_piece[NA]);
 }
 
 t_piece	*filet(int fd)
 {
 	t_piece	temp[26];
 	size_t	i;
+	t_piece	*output;
 
 	i = 0;
 	while (input = parse_piece(fd))
