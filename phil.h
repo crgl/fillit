@@ -16,6 +16,7 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include "libft.h"
 
 # define TRUE 1
 # define FALSE 0
@@ -23,6 +24,22 @@
 typedef unsigned char	t_byte;
 
 typedef unsigned char	t_bool;
+
+typedef struct			s_entry
+{
+	struct s_entry	*R;
+	struct s_entry	*L;
+	struct s_entry	*U;
+	struct s_entry	*D;
+	struct s_entry	*C;
+	char			*N;
+	t_byte			S;
+}						t_entry;
+
+typedef t_entry			t_root;
+typedef t_entry			t_colm;
+typedef t_entry			t_colo;
+typedef t_entry			t_one;
 
 typedef	struct			s_point
 {
