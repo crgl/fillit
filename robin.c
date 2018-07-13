@@ -252,6 +252,7 @@ int		programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
 			}
 			j++;
 		}
+		i++;
 	}
 	return (pugilist(root, box, sqr, 0));
 }
