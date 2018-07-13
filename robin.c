@@ -38,12 +38,12 @@ t_colm  *colm_initializer(t_root *root, char *name)
     return (newcolm);
 }
 
-t_colo  *colo_initializer(t_root *root, char *name)
+t_colo  *colo_initializer(char *name)
 {
     return ((t_colo *)ft_memalloc(sizeof(t_colo)));
 }
 
-t_one   *one_initializer(t_entry *colhead, t_entry *rowleft)
+t_one   *one_initializer(t_entry *colhead, t_one *rowleft)
 {
     t_one   *newone;
 
@@ -70,12 +70,78 @@ t_one   *one_initializer(t_entry *colhead, t_entry *rowleft)
     return (newone);
 }
 
-char    **pugilists(t_piece *tetrimini, int sqr)
+t_colm  *ith(t_root *root, int i)
+{
+    int j;
+    t_colm *ret;
+
+    j = 0;
+    ret = root->R;
+    while (j < i)
+    {
+        ret = ret->R;
+        j++;
+    }
+    return (ret);
+}
+
+char    **pugilist(t_root *root, t_colo *box, int sqr)
 {
     return (NULL);
 }
 
-int     min_sum(char *square, int side)
+char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo *box)
+{
+    int     i;
+    int     j;
+    int     k;
+    t_one   *last_one;
+
+    i = 0;
+    while (!(death(tetrimini[i], g_piece[END])))
+    {
+        j = 0;
+        if (sqr - tetrimini[i].x - 1 <= 0 || sqr - tetrimini[i].y - 1 <= 0)
+            return (NULL);
+        while (j <= sqr - tetrimini[i].height)
+        {
+            k = 0;
+            while (k <= sqr - tetrimini[i].width)
+            {
+                last_one = one_initializer(ith(root, i), NULL);
+                last_one = one_initializer(box[sqr * (j + tetrimini[i].b[0].y) + k + tetrimini[i].b[0].y], last_one);
+                last_one = one_initializer(box[sqr * (j + tetrimini[i].b[1].y) + k + tetrimini[i].b[1].y], last_one);
+                last_one = one_initializer(box[sqr * (j + tetrimini[i].b[2].y) + k + tetrimini[i].b[2].y], last_one);
+                last_one = one_initializer(box[sqr * (j + tetrimini[i].b[3].y) + k + tetrimini[i].b[3].y], last_one);
+                k++;
+            }
+            j++;
+        }
+    }
+    return (pugilist(root, box, sqr));
+}
+
+char    **wildcard(t_piece *tetrimini, int sqr)
+{
+    t_root  *root;
+    t_colo  *box;
+    int     i;
+
+    box = (t_colo *)ft_memalloc(sqr * sqr * sizeof(t_colo));
+    if (box == NULL)
+        return (NULL);
+    root = root_initializer();
+    i = 0;
+    while (!(death(tetrimini[i], g_piece[END])))
+        colm_initializer(root, &('A' + i++));
+    i = 0;
+    while (i < sqr * sqr)
+        box[i] = colo_initializer(ft_itoa(i));
+    i = 0;
+    return (programmer(tetrimini, sqr, root, box));
+}
+
+int     dot_sum(char *square, int side)
 {
     int i;
     int output;
@@ -97,7 +163,7 @@ char    *layer_of_eggs(t_piece *tetrimini)
     char    **candidates;
     int     nump;
     int     sqr;
-    int     minsum;
+    int     maxim;
     
     nump = 0;
     while (!(death(tetrimini[nump], g_piece[END])))
@@ -105,14 +171,14 @@ char    *layer_of_eggs(t_piece *tetrimini)
     sqr = 2;
     while (sqr * sqr < 4 * nump)
         sqr++;
-    while (!(candidates = pugilist(tetrimini, sqr)))
+    while (!(candidates = wildcard(tetrimini, sqr)))
         sqr++;
-    minsum = sqr * sqr * (sqr + 1);
+    maxim = -1;
     while (*candidates)
     {
-        if (min_sum(*candidates, sqr) < minsum)
+        if (dot_sum(*candidates, sqr) > maxim)
         {
-            minsum = min_sum(*candidates, sqr);
+            maxim = dot_sum(*candidates, sqr);
             output = *candidates;
         }
         candidates++;
