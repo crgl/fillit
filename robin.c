@@ -85,12 +85,12 @@ t_colm  *ith(t_root *root, int i)
     return (ret);
 }
 
-char    **pugilist(t_root *root, t_colo *box, int sqr)
+char    **pugilist(t_root *root, t_colo **box, int sqr)
 {
     return (NULL);
 }
 
-char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo *box)
+char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
 {
     int     i;
     int     j;
@@ -101,7 +101,7 @@ char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo *box)
     while (!(death(tetrimini[i], g_piece[END])))
     {
         j = 0;
-        if (sqr - tetrimini[i].x - 1 <= 0 || sqr - tetrimini[i].y - 1 <= 0)
+        if (sqr - tetrimini[i].width - 1 <= 0 || sqr - tetrimini[i].height - 1 <= 0)
             return (NULL);
         while (j <= sqr - tetrimini[i].height)
         {
@@ -124,16 +124,18 @@ char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo *box)
 char    **wildcard(t_piece *tetrimini, int sqr)
 {
     t_root  *root;
-    t_colo  *box;
+    t_colo  **box;
     int     i;
+    char    *alpha;
 
+    alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     box = (t_colo *)ft_memalloc(sqr * sqr * sizeof(t_colo));
     if (box == NULL)
         return (NULL);
     root = root_initializer();
     i = 0;
     while (!(death(tetrimini[i], g_piece[END])))
-        colm_initializer(root, &('A' + i++));
+        colm_initializer(root, alpha + i++);
     i = 0;
     while (i < sqr * sqr)
         box[i] = colo_initializer(ft_itoa(i));
