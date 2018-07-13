@@ -38,6 +38,8 @@ t_colm  *colm_initializer(t_root *root, char *name)
 	newcolm->L = root->L;
 	root->L->R = newcolm;
 	root->L = newcolm;
+	newcolm->U = newcolm;
+	newcolm->D = newcolm;
 	return (newcolm);
 }
 
@@ -51,6 +53,8 @@ t_colo  *colo_initializer(char *name)
 	newcolo->N = name;
 	newcolo->L = newcolo;
 	newcolo->R = newcolo;
+	newcolo->U = newcolo;
+	newcolo->D = newcolo;
 	return (newcolo);
 }
 
@@ -275,6 +279,7 @@ int		wildcard(t_piece *tetrimini, int sqr)
 			return (-1);
 		}
 		alpha[0] += 1;
+		i++;
 	}
 	i = 0;
 	while (i < sqr * sqr)
