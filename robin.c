@@ -82,6 +82,7 @@ t_one   *one_initializer(t_entry *colhead, t_one *rowleft)
 	colhead->U->D = newone;
 	colhead->U = newone;
 	colhead->S++;
+	newone->C = colhead;
 	return (newone);
 }
 
@@ -188,7 +189,7 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	colhead = root->R;
 	to_remove = colhead;
 	num_ones = colhead->S;
-	while (colhead->R->N != NULL)
+	while (colhead->N != NULL)
 	{
 		if (colhead->S < num_ones)
 		{
@@ -197,11 +198,13 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 		}
 		colhead = colhead->R;
 	}
-	colver(colhead);
-	if (colhead->D->N != NULL)
+	ft_putendl("WE'RE COLVERING");
+	ft_putendl(to_remove->N);
+	colver(to_remove);
+	if (to_remove->D->N != NULL)
 		return (1);
-	a_rowish = colhead->D;
-	while (a_rowish->D->N != NULL)
+	a_rowish = to_remove->D;
+	while (a_rowish->N != NULL)
 	{
 		solution[k] = a_rowish;
 		a_rowish = a_rowish->R;
@@ -221,7 +224,7 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 			a_rowish = a_rowish->L;
 		}
 	}
-	callback(colhead);
+	callback(to_remove);
 	return (0);
 }
 
