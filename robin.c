@@ -27,10 +27,13 @@ t_root  *root_initializer(void)
 t_colm  *colm_initializer(t_root *root, char *name)
 {
 	t_colm  *newcolm;
+	char	*namespace;
 
 	newcolm = (t_colm *)ft_memalloc(sizeof(t_colm));
-	if (!newcolm)
+	namespace = ft_strdup(name);
+	if (!newcolm || !namespace)
 		return (NULL);
+	newcolm->N = namespace;
 	newcolm->R = root;
 	newcolm->L = root->L;
 	root->L->R = newcolm;
@@ -42,10 +45,10 @@ t_colo  *colo_initializer(char *name)
 {
 	t_colo  *newcolo;
 
-
 	newcolo = (t_colo *)ft_memalloc(sizeof(t_colo));
 	if (!newcolo)
 		return (NULL);
+	newcolo->N = name;
 	newcolo->L = newcolo;
 	newcolo->R = newcolo;
 	return (newcolo);
@@ -96,6 +99,7 @@ t_colm  *ith(t_root *root, int i)
 void	print_solution(t_one **solution, int k, int sqr)
 {
 	int	i;
+	int	j;
 	char str[sqr * (sqr + 1) + 1];
 	char name;
 
@@ -104,11 +108,19 @@ void	print_solution(t_one **solution, int k, int sqr)
 	i = 0;
 	while (i < k)
 	{
+		j = 0;
 		name = solution[i]->C->N[0];
-		ft_atoi()
-
-
+		while (j < 4)
+		{
+			solution[i] = solution[i]->R;
+			str[ft_atoi(solution[i]->C->N) + ft_atoi(solution[i]->C->N) / sqr] = name;
+			j++;
+		}
+		if (i < sqr)
+			str[(sqr + 1) * (i + 1) - 1] = '\n';
+		i++;
 	}
+	ft_putstr(str);
 	return ;
 }
 
@@ -183,7 +195,7 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	}
 	colver(colhead);
 	if (colhead->D->N != NULL)
-		return (NULL);
+		return (1);
 	a_rowish = colhead->D;
 	while (a_rowish->D->N != NULL)
 	{
@@ -194,7 +206,10 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 			colver(a_rowish->C);
 			a_rowish = a_rowish->R;
 		}
-		(pugilist(root, box, sqr, k + 1) != 0) ? return (1) : 0;
+		if (pugilist(root, box, sqr, k + 1) != 0)
+			return (1);
+		else
+			break ;
 		a_rowish = a_rowish->L;
 		while (a_rowish->C->N[0] != solution[k]->C->N[0])
 		{
@@ -214,21 +229,21 @@ int		programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
 	t_one   *last_one;
 
 	i = 0;
-	while (!(death(tetrimini[i], g_piece[END])))
+	while (!(death(tetrimini + i, &g_piece[END])))
 	{
 		j = 0;
-		if (sqr - tetrimini[i].width - 1 <= 0 || sqr - tetrimini[i].height - 1 <= 0)
-			return (NULL);
+		if (sqr < tetrimini[i].width || sqr < tetrimini[i].height)
+			return (1);
 		while (j <= sqr - tetrimini[i].height)
 		{
 			k = 0;
 			while (k <= sqr - tetrimini[i].width)
 			{
 				last_one = one_initializer(ith(root, i), NULL);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[0].y) + k + tetrimini[i].b[0].y], last_one);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[1].y) + k + tetrimini[i].b[1].y], last_one);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[2].y) + k + tetrimini[i].b[2].y], last_one);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[3].y) + k + tetrimini[i].b[3].y], last_one);
+				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[0].y) + k + tetrimini[i].b[0].x], last_one);
+				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[1].y) + k + tetrimini[i].b[1].x], last_one);
+				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[2].y) + k + tetrimini[i].b[2].x], last_one);
+				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[3].y) + k + tetrimini[i].b[3].x], last_one);
 				k++;
 			}
 			j++;
@@ -242,19 +257,33 @@ int		wildcard(t_piece *tetrimini, int sqr)
 	t_root	*root;
 	t_colo	**box;
 	int		i;
-	char	*alpha;
+	char	alpha[2];
+	t_colm	*check;
 
-	alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	box = (t_colo *)ft_memalloc(sqr * sqr * sizeof(t_colo));
+	alpha[0] = 'A';
+	alpha[1] = '\0';
+	box = (t_colo **)ft_memalloc(sqr * sqr * sizeof(t_colo*));
 	if (box == NULL)
-		return (NULL);
+		return (-1);
 	root = root_initializer();
 	i = 0;
-	while (!(death(tetrimini[i], g_piece[END])))
-		colm_initializer(root, alpha + i++);
+	while (!(death(tetrimini + i, &g_piece[END])))
+	{
+		check = colm_initializer(root, alpha);
+		if (check == NULL)
+		{
+			return (-1);
+		}
+		alpha[0] += 1;
+	}
 	i = 0;
 	while (i < sqr * sqr)
+	{
 		box[i] = colo_initializer(ft_itoa(i));
+		if (box[i] == NULL)
+			return (-1);
+		i++;
+	}
 	i = 0;
 	return (programmer(tetrimini, sqr, root, box));
 }
@@ -281,16 +310,24 @@ void	layer_of_eggs(t_piece *tetrimini)
 	// char    **candidates;
 	int     nump;
 	int     sqr;
+	int		check;
 	// int     maxim;
 
+	if (tetrimini == NULL)
+	{
+		ft_putendl_fd("UNACCEPTABLE", 2);
+		return ;
+	}
 	nump = 0;
-	while (!(death(tetrimini[nump], g_piece[END])))
+	while (!(death(tetrimini + nump, &g_piece[END])))
 		nump++;
 	sqr = 2;
 	while (sqr * sqr < 4 * nump)
 		sqr++;
-	while (wildcard(tetrimini, sqr) != 0)
+	while ((check = wildcard(tetrimini, sqr)) > 0)
 		sqr++;
+	if (check < 0)
+		ft_putendl_fd("There has been a mallocation error!", 2);
 /*	maxim = -1;
 	while (*candidates)
 	{

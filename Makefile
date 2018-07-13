@@ -6,7 +6,7 @@
 #    By: cgleason <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/07/11 10:43:52 by cgleason          #+#    #+#              #
-#    Updated: 2018/07/11 19:33:12 by cgleason         ###   ########.fr        #
+#    Updated: 2018/07/13 15:02:04 by cgleason         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,9 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -I libft -o $(NAME)
 
-SRC = dr_fill.c
+DBFLAGS = -Wall -Wextra -Werror -I libft -o villdebug -g
+
+SRC = dr_fill.c robin.c
 
 OBJS = $(SRC:.c=.o)
 
@@ -30,7 +32,10 @@ $(NAME): $(OBJS) $(LIB)
 $(LIB):
 	@cd $(LIBDIR) && make
 
-.PHONY: clean fclean all re
+.PHONY: clean fclean all re debug
+
+debug:
+	$(CC) $(DBFLAGS) $(SRC) $(LIB)
 
 clean:
 	rm -f $(OBJS)

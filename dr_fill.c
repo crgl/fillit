@@ -11,7 +11,29 @@
 /* ************************************************************************** */
 
 #include "phil.h"
-#include "libft.h"
+
+t_piece	g_piece[20] = {
+	{1, 4, {{0, 0}, {0, 1}, {0, 2}, {0, 3}}},
+	{4, 1, {{0, 0}, {1, 0}, {2, 0}, {3, 0}}},
+	{2, 2, {{0, 0}, {1, 0}, {1, 0}, {1, 1}}},
+	{3, 2, {{0, 0}, {1, 0}, {2, 0}, {1, 1}}},
+	{3, 2, {{1, 0}, {0, 1}, {1, 1}, {2, 1}}},
+	{2, 3, {{1, 0}, {0, 1}, {1, 1}, {1, 2}}},
+	{2, 3, {{0, 0}, {0, 1}, {1, 1}, {0, 2}}},
+	{3, 2, {{1, 0}, {2, 0}, {0, 1}, {1, 1}}},
+	{2, 3, {{0, 0}, {0, 1}, {1, 1}, {1, 2}}},
+	{3, 2, {{0, 0}, {0, 1}, {1, 1}, {2, 1}}},
+	{2, 3, {{1, 0}, {0, 1}, {1, 1}, {0, 2}}},
+	{2, 3, {{1, 0}, {1, 1}, {0, 2}, {1, 2}}},
+	{2, 3, {{0, 0}, {1, 0}, {0, 1}, {0, 2}}},
+	{3, 2, {{0, 0}, {0, 1}, {1, 1}, {2, 1}}},
+	{3, 2, {{0, 0}, {1, 0}, {2, 0}, {2, 1}}},
+	{2, 3, {{0, 0}, {0, 1}, {0, 2}, {1, 2}}},
+	{2, 3, {{0, 0}, {1, 0}, {1, 1}, {1, 2}}},
+	{3, 2, {{0, 0}, {1, 0}, {2, 0}, {0, 1}}},
+	{3, 2, {{2, 0}, {0, 1}, {1, 1}, {2, 1}}},
+	{0, 0, {{0, 0}, {0, 0}, {0, 0}, {0, 0}}}
+};
 
 void	display_usage(void)
 {
@@ -60,10 +82,9 @@ t_piece	*which_piece(t_point *hashes)
 
 t_piece	*parse_piece(char *square)
 {
-	t_piece	couldbe;
 	size_t	i;
 	t_byte	j;
-	t_point	hashes[4]
+	t_point	hashes[4];
 
 	i = 0;
 	j = 0;
@@ -72,7 +93,7 @@ t_piece	*parse_piece(char *square)
 		if (square[i] == '#' && (i + 1) % 5 != 0)
 		{
 			if (j < 4)
-				hashes[j++] = {i % 5, i / 5}
+				hashes[j++] = (t_point){i % 5, i / 5};
 			else
 				return (NULL);
 		}
@@ -89,15 +110,15 @@ t_piece	*parse_piece(char *square)
 
 t_piece	*parse_square(int fd)
 {
-	char	square[20]
+	char	square[20];
 	char	c[1];
 	int		check;
 
-	check = read(fd, square, 20)
+	check = read(fd, square, 20);
 	if (check == 20)
 	{
 		check = read(fd, c, 1);
-		if (c == '\n' || check = 0)
+		if (*c == '\n' || check == 0)
 		{
 			return (parse_piece(square));
 		}
@@ -117,7 +138,7 @@ t_bool	death(t_piece *p1, t_piece *p2)
 	if (p1->width == p2->width && p1->height == p2->height)
 	{
 		while (++i < 4)
-			if (p1->b[i] != p2->b[i])
+			if (p1->b[i].x != p2->b[i].x || p1->b[i].y != p2->b[i].y)
 				return (FALSE);
 		return (TRUE);
 	}
@@ -133,7 +154,7 @@ t_piece	*filet(int fd)
 
 	i = 0;
 	input = &g_piece[I];
-	while (!(death(&input, &g_piece[END])))
+	while (!(death(input, &g_piece[END])))
 	{
 		if (i == 26)
 			return (NULL);
