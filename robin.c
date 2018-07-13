@@ -93,6 +93,25 @@ t_colm  *ith(t_root *root, int i)
 	return (ret);
 }
 
+void	print_solution(t_one **solution, int k, int sqr)
+{
+	int	i;
+	char str[sqr * (sqr + 1) + 1];
+	char name;
+
+	ft_memset(str, '.', sqr * (sqr + 1));
+	str[sqr * (sqr + 1)] = '\0';
+	i = 0;
+	while (i < k)
+	{
+		name = solution[i]->C->N[0];
+		ft_atoi()
+
+
+	}
+	return ;
+}
+
 void	colver(t_entry	*col)
 {
 	char	c;
@@ -137,9 +156,9 @@ void	callback(t_entry *col)
 	col->L->R = col;
 }
 
-char    **pugilist(t_root *root, t_colo **box, int sqr)
+int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 {
-	static t_one	*solution[27][1];
+	static t_one	*solution[27];
 	t_colm		*colhead;
 	size_t		num_ones;
 	t_colm		*to_remove;
@@ -147,7 +166,8 @@ char    **pugilist(t_root *root, t_colo **box, int sqr)
 
 	if (root->R->N == NULL)
 	{
-		return (solution);
+		print_solution(solution, k, sqr);
+		return (0);
 	}
 	colhead = root->R;
 	to_remove = colhead;
@@ -167,27 +187,26 @@ char    **pugilist(t_root *root, t_colo **box, int sqr)
 	a_rowish = colhead->D;
 	while (a_rowish->D->N != NULL)
 	{
-		*solution = a_rowish;
+		solution[k] = a_rowish;
 		a_rowish = a_rowish->R;
-		while (a_rowish->C->N[0] != (*solution)->C->N[0])
+		while (a_rowish->C->N[0] != solution[k]->C->N[0])
 		{
 			colver(a_rowish->C);
 			a_rowish = a_rowish->R;
 		}
-		if (pugilist(root, box, sqr) != NULL)
-			return (solution--);
+		(pugilist(root, box, sqr, k + 1) != 0) ? return (1) : 0;
 		a_rowish = a_rowish->L;
-		while (a_rowish->C->N[0] != (*solution)->C->N[0])
+		while (a_rowish->C->N[0] != solution[k]->C->N[0])
 		{
 			callback(a_rowish->C);
 			a_rowish = a_rowish->L;
 		}
 	}
 	callback(colhead);
-	return (NULL);
+	return (0);
 }
 
-char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
+int		programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
 {
 	int     i;
 	int     j;
@@ -215,10 +234,10 @@ char    **programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
 			j++;
 		}
 	}
-	return (pugilist(root, box, sqr));
+	return (pugilist(root, box, sqr, 0));
 }
 
-char    **wildcard(t_piece *tetrimini, int sqr)
+int		wildcard(t_piece *tetrimini, int sqr)
 {
 	t_root	*root;
 	t_colo	**box;
@@ -256,13 +275,13 @@ int     dot_sum(char *square, int side)
 	return (output);
 }
 
-char    *layer_of_eggs(t_piece *tetrimini)
+void	layer_of_eggs(t_piece *tetrimini)
 {
-	char    *output;
-	char    **candidates;
+	// char    *output;
+	// char    **candidates;
 	int     nump;
 	int     sqr;
-	int     maxim;
+	// int     maxim;
 
 	nump = 0;
 	while (!(death(tetrimini[nump], g_piece[END])))
@@ -270,9 +289,9 @@ char    *layer_of_eggs(t_piece *tetrimini)
 	sqr = 2;
 	while (sqr * sqr < 4 * nump)
 		sqr++;
-	while (!(candidates = wildcard(tetrimini, sqr)))
+	while (wildcard(tetrimini, sqr) != 0)
 		sqr++;
-	maxim = -1;
+/*	maxim = -1;
 	while (*candidates)
 	{
 		if (dot_sum(*candidates, sqr) > maxim)
@@ -283,4 +302,4 @@ char    *layer_of_eggs(t_piece *tetrimini)
 		candidates++;
 	}
 	return (output);
-}
+*/}
