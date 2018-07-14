@@ -1,3 +1,5 @@
+#include "phil.h"
+
 int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 {
 	static t_one	*solution[27];
