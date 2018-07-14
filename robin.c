@@ -12,9 +12,9 @@
 
 #include "phil.h"
 
-t_root  *root_initializer(void)
+t_root	*root_init(void)
 {
-	t_root  *newroot;
+	t_root	*newroot;
 
 	newroot = (t_root *)ft_memalloc(sizeof(t_root));
 	if (!newroot)
@@ -24,9 +24,9 @@ t_root  *root_initializer(void)
 	return (newroot);
 }
 
-t_colm  *colm_initializer(t_root *root, char *name)
+t_colm	*colm_init(t_root *root, char *name)
 {
-	t_colm  *newcolm;
+	t_colm	*newcolm;
 	char	*namespace;
 
 	newcolm = (t_colm *)ft_memalloc(sizeof(t_colm));
@@ -43,9 +43,9 @@ t_colm  *colm_initializer(t_root *root, char *name)
 	return (newcolm);
 }
 
-t_colo  *colo_initializer(char *name)
+t_colo	*colo_init(char *name)
 {
-	t_colo  *newcolo;
+	t_colo	*newcolo;
 
 	newcolo = (t_colo *)ft_memalloc(sizeof(t_colo));
 	if (!newcolo)
@@ -58,9 +58,9 @@ t_colo  *colo_initializer(char *name)
 	return (newcolo);
 }
 
-t_one   *one_initializer(t_entry *colhead, t_one *rowleft)
+t_one	*one_init(t_entry *colhead, t_one *rowleft)
 {
-	t_one   *newone;
+	t_one	*newone;
 
 	newone = (t_one *)ft_memalloc(sizeof(t_one));
 	if (!newone)
@@ -86,10 +86,10 @@ t_one   *one_initializer(t_entry *colhead, t_one *rowleft)
 	return (newone);
 }
 
-t_colm  *ith(t_root *root, int i)
+t_colm	*ith(t_root *root, int i)
 {
-	int j;
-	t_colm *ret;
+	int		j;
+	t_colm	*ret;
 
 	j = 0;
 	ret = root->R;
@@ -104,27 +104,23 @@ t_colm  *ith(t_root *root, int i)
 void	print_solution(t_one **solution, int k, int sqr)
 {
 	int		i;
-	int		j;
 	char	str[sqr * (sqr + 1) + 1];
 	char	name;
 	int		loc;
 
 	ft_memset(str, '.', sqr * (sqr + 1));
 	str[sqr * (sqr + 1)] = '\0';
-	i = 0;
-	while (i < k)
+	i = -1;
+	while (++i < k)
 	{
-		j = 0;
 		name = solution[i]->C->N[0];
-		while (j < 4)
+		solution[i] = solution[i]->R;
+		while (solution[i]->C->N[0] != name)
 		{
-			solution[i] = solution[i]->R;
 			loc = ft_atoi(solution[i]->C->N);
 			str[loc + loc / sqr] = name;
-			j++;
+			solution[i] = solution[i]->R;
 		}
-		solution[i] = solution[i]->R;
-		i++;
 	}
 	i = -1;
 	while (++i < sqr)
@@ -133,7 +129,7 @@ void	print_solution(t_one **solution, int k, int sqr)
 	return ;
 }
 
-void	colver(t_entry	*col)
+void	colver(t_entry *col)
 {
 	char	*s;
 
@@ -180,29 +176,16 @@ void	callback(t_entry *col)
 int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 {
 	static t_one	*solution[27];
-	t_colm		*colhead;
-	// size_t		num_ones;
-	t_colm		*to_remove;
-	t_one		*a_rowish;
-	int			flag;
+	t_colm			*to_remove;
+	t_one			*a_rowish;
+	int				flag;
 
 	if (root->R->N == NULL)
 	{
 		print_solution(solution, k, sqr);
 		return (0);
 	}
-	colhead = root->R;
-	to_remove = colhead;
-	// num_ones = colhead->S;
-	// while (colhead->N != NULL)
-	// {
-	// 	if (colhead->S < num_ones)
-	// 	{
-	// 		to_remove = colhead;
-	// 		num_ones = colhead->S;
-	// 	}
-	// 	colhead = colhead->R;
-	// }
+	to_remove = root->R;
 	colver(to_remove);
 	if (to_remove->D->N != NULL)
 	{
@@ -234,39 +217,36 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	return (flag);
 }
 
-int		programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
+int		programmer(t_piece *tris, int sqr, t_root *root, t_colo **box)
 {
-	int     i;
-	int     j;
-	int     k;
-	t_one   *last_one;
+	int		i;
+	int		j;
+	int		k;
+	t_one	*l1;
 
-	i = 0;
-	while (!(death(tetrimini + i, &g_piece[END])))
+	i = -1;
+	while (!(death(tris + ++i, &g_piece[END])))
 	{
-		j = 0;
-		if (sqr < tetrimini[i].width || sqr < tetrimini[i].height)
+		j = -1;
+		if (sqr < tris[i].width || sqr < tris[i].height)
 			return (1);
-		while (j <= sqr - tetrimini[i].height)
+		while (++j <= sqr - tris[i].height)
 		{
-			k = 0;
-			while (k <= sqr - tetrimini[i].width)
+			k = -1;
+			while (++k <= sqr - tris[i].width)
 			{
-				last_one = one_initializer(ith(root, i), NULL);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[0].y) + k + tetrimini[i].b[0].x], last_one);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[1].y) + k + tetrimini[i].b[1].x], last_one);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[2].y) + k + tetrimini[i].b[2].x], last_one);
-				last_one = one_initializer(box[sqr * (j + tetrimini[i].b[3].y) + k + tetrimini[i].b[3].x], last_one);
-				k++;
+				l1 = one_init(ith(root, i), NULL);
+				l1 = one_init(box[sqr * (j + POS(0).y) + k + POS(0).x], l1);
+				l1 = one_init(box[sqr * (j + POS(1).y) + k + POS(1).x], l1);
+				l1 = one_init(box[sqr * (j + POS(2).y) + k + POS(2).x], l1);
+				l1 = one_init(box[sqr * (j + POS(3).y) + k + POS(3).x], l1);
 			}
-			j++;
 		}
-		i++;
 	}
 	return (pugilist(root, box, sqr, 0));
 }
 
-int		wildcard(t_piece *tetrimini, int sqr)
+int		wildcard(t_piece *tris, int sqr)
 {
 	t_root	*root;
 	t_colo	**box;
@@ -276,86 +256,48 @@ int		wildcard(t_piece *tetrimini, int sqr)
 
 	alpha[0] = 'A';
 	alpha[1] = '\0';
-	box = (t_colo **)ft_memalloc(sqr * sqr * sizeof(t_colo*));
-	if (box == NULL)
+	if ((box = (t_colo **)ft_memalloc(sqr * sqr * sizeof(t_colo*))) == NULL)
 		return (-1);
-	root = root_initializer();
+	root = root_init();
 	i = 0;
-	while (!(death(tetrimini + i, &g_piece[END])))
+	while (!(death(tris + i++, &g_piece[END])))
 	{
-		check = colm_initializer(root, alpha);
-		if (check == NULL)
-		{
+		if ((check = colm_init(root, alpha)) == NULL)
 			return (-1);
-		}
 		alpha[0] += 1;
-		i++;
 	}
-	i = 0;
-	while (i < sqr * sqr)
+	i = -1;
+	while (++i < sqr * sqr)
 	{
-		box[i] = colo_initializer(ft_itoa(i));
-		if (box[i] == NULL)
+		if ((box[i] = colo_init(ft_itoa(i))) == NULL)
 			return (-1);
-		i++;
 	}
-	i = 0;
-	return (programmer(tetrimini, sqr, root, box));
+	return (programmer(tris, sqr, root, box));
 }
 
-int     dot_sum(char *square, int side)
+void	layer_of_eggs(t_piece *tris)
 {
-	int i;
-	int output;
-
-	output = 0;
-	i = 0;
-	while (square[i] != '\0')
-	{
-		if (square[i] == '.')
-			output += i / side + i % side;
-		i++;
-	}
-	return (output);
-}
-
-void	layer_of_eggs(t_piece *tetrimini)
-{
-	// char    *output;
-	// char    **candidates;
-	int     nump;
-	int     sqr;
+	int		nump;
+	int		sqr;
 	int		check;
-	// int     maxim;
 
-	if (tetrimini == NULL)
+	if (tris == NULL)
 	{
 		ft_putendl("error");
 		ft_putendl_fd("UNACCEPTABLE", 2);
 		return ;
 	}
 	nump = 0;
-	while (!(death(tetrimini + nump, &g_piece[END])))
+	while (!(death(tris + nump, &g_piece[END])))
 		nump++;
 	sqr = 2;
 	while (sqr * sqr < 4 * nump)
 		sqr++;
-	while ((check = wildcard(tetrimini, sqr)) > 0)
+	while ((check = wildcard(tris, sqr)) > 0)
 		sqr++;
 	if (check < 0)
 	{
 		ft_putendl("error");
 		ft_putendl_fd("There has been a mallocation error!", 2);
 	}
-/*	maxim = -1;
-	while (*candidates)
-	{
-		if (dot_sum(*candidates, sqr) > maxim)
-		{
-			maxim = dot_sum(*candidates, sqr);
-			output = *candidates;
-		}
-		candidates++;
-	}
-	return (output);
-*/}
+}

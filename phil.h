@@ -21,6 +21,8 @@
 # define TRUE 1
 # define FALSE 0
 
+# define POS(z) tris[i].b[z]
+
 typedef unsigned char	t_byte;
 
 typedef unsigned char	t_bool;
