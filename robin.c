@@ -198,13 +198,11 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 		}
 		colhead = colhead->R;
 	}
-	ft_putendl("WE'RE COLVERING");
-	ft_putendl(to_remove->N);
 	colver(to_remove);
 	if (to_remove->D->N != NULL)
 		return (1);
 	a_rowish = to_remove->D;
-	while (a_rowish->N != NULL)
+	while (a_rowish->N == NULL)
 	{
 		solution[k] = a_rowish;
 		a_rowish = a_rowish->R;
