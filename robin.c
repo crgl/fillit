@@ -135,16 +135,16 @@ void	print_solution(t_one **solution, int k, int sqr)
 
 void	colver(t_entry	*col)
 {
-	char	c;
+	char	*s;
 
-	c = col->N[0];
+	s = col->N;
 	col->L->R = col->R;
 	col->R->L = col->L;
 	col = col->D;
 	while (col->N == NULL)
 	{
 		col = col->R;
-		while (col->C->N[0] != c)
+		while (ft_strcmp(col->C->N, s))
 		{
 			col->D->U = col->U;
 			col->U->D = col->D;
@@ -157,14 +157,14 @@ void	colver(t_entry	*col)
 
 void	callback(t_entry *col)
 {
-	char	c;
+	char	*s;
 
-	c = col->N[0];
+	s = col->N;
 	col = col->U;
 	while (col->N == NULL)
 	{
 		col = col->L;
-		while (col->C->N[0] != c)
+		while (ft_strcmp(col->C->N, s))
 		{
 			col->C->S += 1;
 			col->D->U = col;
@@ -184,6 +184,7 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	size_t		num_ones;
 	t_colm		*to_remove;
 	t_one		*a_rowish;
+	int			flag;
 
 	if (root->R->N == NULL)
 	{
@@ -204,7 +205,10 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	}
 	colver(to_remove);
 	if (to_remove->D->N != NULL)
+	{
+		callback(to_remove);
 		return (1);
+	}
 	a_rowish = to_remove->D;
 	while (a_rowish->N == NULL)
 	{
@@ -215,19 +219,19 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 			colver(a_rowish->C);
 			a_rowish = a_rowish->R;
 		}
-		if (pugilist(root, box, sqr, k + 1) != 0)
-			return (1);
-		else
-			break ;
+		flag = pugilist(root, box, sqr, k + 1);
 		a_rowish = a_rowish->L;
 		while (a_rowish->C->N[0] != solution[k]->C->N[0])
 		{
 			callback(a_rowish->C);
 			a_rowish = a_rowish->L;
 		}
+		if (flag == 0)
+			break ;
+		a_rowish = a_rowish->D;
 	}
 	callback(to_remove);
-	return (0);
+	return (flag);
 }
 
 int		programmer(t_piece *tetrimini, int sqr, t_root *root, t_colo **box)
