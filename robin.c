@@ -103,10 +103,11 @@ t_colm  *ith(t_root *root, int i)
 
 void	print_solution(t_one **solution, int k, int sqr)
 {
-	int	i;
-	int	j;
-	char str[sqr * (sqr + 1) + 1];
-	char name;
+	int		i;
+	int		j;
+	char	str[sqr * (sqr + 1) + 1];
+	char	name;
+	int		loc;
 
 	ft_memset(str, '.', sqr * (sqr + 1));
 	str[sqr * (sqr + 1)] = '\0';
@@ -118,13 +119,16 @@ void	print_solution(t_one **solution, int k, int sqr)
 		while (j < 4)
 		{
 			solution[i] = solution[i]->R;
-			str[ft_atoi(solution[i]->C->N) + ft_atoi(solution[i]->C->N) / sqr] = name;
+			loc = ft_atoi(solution[i]->C->N);
+			str[loc + loc / sqr] = name;
 			j++;
 		}
-		if (i < sqr)
-			str[(sqr + 1) * (i + 1) - 1] = '\n';
+		solution[i] = solution[i]->R;
 		i++;
 	}
+	i = -1;
+	while (++i < sqr)
+		str[(sqr + 1) * (i + 1) - 1] = '\n';
 	ft_putstr(str);
 	return ;
 }

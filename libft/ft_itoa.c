@@ -27,7 +27,7 @@ char	*ft_itoa(int n)
 	else
 		return (ft_memset(ft_strnew(1), '0', 1));
 	pow = -1;
-	while (pow > n / 10)
+	while (pow >= n / 10)
 		pow *= 10;
 	while (pow != 0)
 	{
