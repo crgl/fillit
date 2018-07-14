@@ -181,7 +181,7 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 {
 	static t_one	*solution[27];
 	t_colm		*colhead;
-	size_t		num_ones;
+	// size_t		num_ones;
 	t_colm		*to_remove;
 	t_one		*a_rowish;
 	int			flag;
@@ -193,16 +193,16 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	}
 	colhead = root->R;
 	to_remove = colhead;
-	num_ones = colhead->S;
-	while (colhead->N != NULL)
-	{
-		if (colhead->S < num_ones)
-		{
-			to_remove = colhead;
-			num_ones = colhead->S;
-		}
-		colhead = colhead->R;
-	}
+	// num_ones = colhead->S;
+	// while (colhead->N != NULL)
+	// {
+	// 	if (colhead->S < num_ones)
+	// 	{
+	// 		to_remove = colhead;
+	// 		num_ones = colhead->S;
+	// 	}
+	// 	colhead = colhead->R;
+	// }
 	colver(to_remove);
 	if (to_remove->D->N != NULL)
 	{
@@ -330,6 +330,7 @@ void	layer_of_eggs(t_piece *tetrimini)
 
 	if (tetrimini == NULL)
 	{
+		ft_putendl("error");
 		ft_putendl_fd("UNACCEPTABLE", 2);
 		return ;
 	}
@@ -342,7 +343,10 @@ void	layer_of_eggs(t_piece *tetrimini)
 	while ((check = wildcard(tetrimini, sqr)) > 0)
 		sqr++;
 	if (check < 0)
+	{
+		ft_putendl("error");
 		ft_putendl_fd("There has been a mallocation error!", 2);
+	}
 /*	maxim = -1;
 	while (*candidates)
 	{
