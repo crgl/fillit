@@ -82,5 +82,7 @@ t_piece					g_piece[20];
 
 void	layer_of_eggs(t_piece *tetrimini);
 t_bool	death(t_piece *p1, t_piece *p2);
+void	fillit(int fd);
+t_piece	*parse_piece(char *square);
 
 #endif
