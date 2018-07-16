@@ -12,6 +12,38 @@
 
 #include "phil.h"
 
+void	free_everything(t_root *root, t_colo **box, int sqr)
+{
+	t_entry	*to_free;
+	int		i;
+	char	*col_name;
+
+	i = 0;
+	while (i < sqr)
+		free(box[i++]);
+	free(box);
+	to_free = root->r;
+	while (to_free->n != NULL)
+	{
+		to_free = to_free->d;
+		while (to_free->n == NULL)
+		{
+			col_name = to_free->c->n;
+			to_free = to_free->l;
+			while (ft_strcmp(to_free->c->n, col_name))
+			{
+				to_free = to_free->r;
+				free(to_free->l);
+			}
+			to_free = to_free->d;
+			free(to_free->u);
+		}
+		to_free = to_free->r;
+		free(to_free->l);
+	}
+	free(to_free);
+}
+
 int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 {
 	static t_one	*solution[27];
@@ -19,23 +51,23 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	t_one			*a_rowish;
 	int				flag;
 
-	to_remove = root->R;
+	to_remove = root->r;
 	colver(to_remove);
-	if (to_remove->N == NULL || to_remove->D->N != NULL)
+	if (to_remove->n == NULL || to_remove->d->n != NULL)
 	{
-		(to_remove->N == NULL) ? print_solution(solution, k, sqr) : 0;
+		(to_remove->n == NULL) ? print_solution(solution, k, sqr) : 0;
 		callback(to_remove);
-		return (to_remove->N == NULL) ? 0 : 1;
+		return (to_remove->n == NULL) ? 0 : 1;
 	}
-	a_rowish = to_remove->D;
-	while (a_rowish->N == NULL)
+	a_rowish = to_remove->d;
+	while (a_rowish->n == NULL)
 	{
-		callverback(a_rowish, TRUE, &colver, solution + k);
+		cvb(a_rowish, TRUE, &colver, solution + k);
 		flag = pugilist(root, box, sqr, k + 1);
-		callverback(a_rowish, FALSE, &callback, solution + k);
+		cvb(a_rowish, FALSE, &callback, solution + k);
 		if (flag == 0)
 			break ;
-		a_rowish = a_rowish->D;
+		a_rowish = a_rowish->d;
 	}
 	callback(to_remove);
 	return (flag);
@@ -92,11 +124,11 @@ int		wildcard(t_piece *tris, int sqr)
 	}
 	i = -1;
 	while (++i < sqr * sqr)
-	{
 		if ((box[i] = colo_init(ft_itoa(i))) == NULL)
 			return (-1);
-	}
-	return (programmer(tris, sqr, root, box));
+	i = programmer(tris, sqr, root, box);
+	free_everything(root, box, sqr);
+	return (i);
 }
 
 void	layer_of_eggs(t_piece *tris)
@@ -108,7 +140,6 @@ void	layer_of_eggs(t_piece *tris)
 	if (tris == NULL)
 	{
 		ft_putendl("error");
-		ft_putendl_fd("UNACCEPTABLE", 2);
 		return ;
 	}
 	nump = 0;
@@ -120,8 +151,5 @@ void	layer_of_eggs(t_piece *tris)
 	while ((check = wildcard(tris, sqr)) > 0)
 		sqr++;
 	if (check < 0)
-	{
 		ft_putendl("error");
-		ft_putendl_fd("There has been a mallocation error!", 2);
-	}
 }

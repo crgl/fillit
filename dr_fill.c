@@ -35,11 +35,6 @@ t_piece	g_piece[20] = {
 	{0, 0, {{0, 0}, {0, 0}, {0, 0}, {0, 0}}}
 };
 
-void	display_usage(void)
-{
-	ft_putendl("usage: ./fillit tris_list.fillit");
-}
-
 void	which_help(t_point *hashes, t_byte *xmin, t_byte *ymin)
 {
 	size_t	i;
@@ -121,12 +116,15 @@ int		main(int argc, char **argv)
 
 	if (argc != 2)
 	{
-		display_usage();
+		ft_putendl("usage: ./fillit tris_list.fillit");
 		return (argc);
 	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
+	{
+		ft_putendl("error");
 		return (-1);
+	}
 	else
 		fillit(fd);
 	return (0);

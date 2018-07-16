@@ -1,101 +1,111 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   boxing_gloves.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cgleason <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/07/15 20:57:21 by cgleason          #+#    #+#             */
+/*   Updated: 2018/07/15 20:57:25 by cgleason         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "phil.h"
 
-void print_solution(t_one **solution, int k, int sqr)
+void	print_solution(t_one **solution, int k, int sqr)
 {
-    int i;
-    char str[sqr * (sqr + 1) + 1];
-    char name;
-    int loc;
+	int		i;
+	char	str[sqr * (sqr + 1) + 1];
+	char	name;
+	int		loc;
 
-    ft_memset(str, '.', sqr * (sqr + 1));
-    str[sqr * (sqr + 1)] = '\0';
-    i = -1;
-    while (++i < k)
-    {
-        name = solution[i]->C->N[0];
-        solution[i] = solution[i]->R;
-        while (solution[i]->C->N[0] != name)
-        {
-            loc = ft_atoi(solution[i]->C->N);
-            str[loc + loc / sqr] = name;
-            solution[i] = solution[i]->R;
-        }
-    }
-    i = -1;
-    while (++i < sqr)
-        str[(sqr + 1) * (i + 1) - 1] = '\n';
-    ft_putstr(str);
+	ft_memset(str, '.', sqr * (sqr + 1));
+	str[sqr * (sqr + 1)] = '\0';
+	i = -1;
+	while (++i < k)
+	{
+		name = solution[i]->c->n[0];
+		solution[i] = solution[i]->r;
+		while (solution[i]->c->n[0] != name)
+		{
+			loc = ft_atoi(solution[i]->c->n);
+			str[loc + loc / sqr] = name;
+			solution[i] = solution[i]->r;
+		}
+	}
+	i = -1;
+	while (++i < sqr)
+		str[(sqr + 1) * (i + 1) - 1] = '\n';
+	ft_putstr(str);
 }
 
-void colver(t_entry *col)
+void	colver(t_entry *col)
 {
-    char *s;
+	char	*s;
 
-    if (col->N == NULL)
-        return ;
-    s = col->N;
-    col->L->R = col->R;
-    col->R->L = col->L;
-    col = col->D;
-    while (col->N == NULL)
-    {
-        col = col->R;
-        while (ft_strcmp(col->C->N, s))
-        {
-            col->D->U = col->U;
-            col->U->D = col->D;
-            col->C->S -= 1;
-            col = col->R;
-        }
-        col = col->D;
-    }
+	if (col->n == NULL)
+		return ;
+	s = col->n;
+	col->l->r = col->r;
+	col->r->l = col->l;
+	col = col->d;
+	while (col->n == NULL)
+	{
+		col = col->r;
+		while (ft_strcmp(col->c->n, s))
+		{
+			col->d->u = col->u;
+			col->u->d = col->d;
+			col->c->s -= 1;
+			col = col->r;
+		}
+		col = col->d;
+	}
 }
 
-void callback(t_entry *col)
+void	callback(t_entry *col)
 {
-    char *s;
+	char	*s;
 
-    if (col->N == NULL)
-        return ;
-    s = col->N;
-    col = col->U;
-    while (col->N == NULL)
-    {
-        col = col->L;
-        while (ft_strcmp(col->C->N, s))
-        {
-            col->C->S += 1;
-            col->D->U = col;
-            col->U->D = col;
-            col = col->L;
-        }
-        col = col->U;
-    }
-    col->R->L = col;
-    col->L->R = col;
+	if (col->n == NULL)
+		return ;
+	s = col->n;
+	col = col->u;
+	while (col->n == NULL)
+	{
+		col = col->l;
+		while (ft_strcmp(col->c->n, s))
+		{
+			col->c->s += 1;
+			col->d->u = col;
+			col->u->d = col;
+			col = col->l;
+		}
+		col = col->u;
+	}
+	col->r->l = col;
+	col->l->r = col;
 }
 
-void callverback(t_entry *row_entry, t_bool cover, void (*f)(t_entry *col), t_one **solutionk)
+void	cvb(t_entry *row, t_bool cover, void (*f)(t_entry *col), t_one **sk)
 {
-    if (cover)
-    {
-        *solutionk = row_entry;
-        row_entry = row_entry->R;
-        while (row_entry->C->N[0] != (*solutionk)->C->N[0])
-        {
-            f(row_entry->C);
-            row_entry = row_entry->R;
-        }
-    }
-    else
-    {
-        row_entry = row_entry->L;
-        while (row_entry->C->N[0] != (*solutionk)->C->N[0])
-        {
-            f(row_entry->C);
-            row_entry = row_entry->L;
-        }
-    }
+	if (cover)
+	{
+		*sk = row;
+		row = row->r;
+		while (row->c->n[0] != (*sk)->c->n[0])
+		{
+			f(row->c);
+			row = row->r;
+		}
+	}
+	else
+	{
+		row = row->l;
+		while (row->c->n[0] != (*sk)->c->n[0])
+		{
+			f(row->c);
+			row = row->l;
+		}
+	}
 }
