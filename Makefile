@@ -18,7 +18,7 @@ CFLAGS = -Wall -Wextra -Werror -I libft -o $(NAME)
 
 DBFLAGS = -Wall -Wextra -Werror -I libft -o villdebug -g
 
-SRC = dr_fill.c robin.c mcgraw.c
+SRC = dr_fill.c robin.c mcgraw.c pcm.c boxing_gloves.c
 
 OBJS = $(SRC:.c=.o)
 

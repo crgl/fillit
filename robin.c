@@ -12,167 +12,6 @@
 
 #include "phil.h"
 
-t_root	*root_init(void)
-{
-	t_root	*newroot;
-
-	newroot = (t_root *)ft_memalloc(sizeof(t_root));
-	if (!newroot)
-		return (NULL);
-	newroot->R = newroot;
-	newroot->L = newroot;
-	return (newroot);
-}
-
-t_colm	*colm_init(t_root *root, char *name)
-{
-	t_colm	*newcolm;
-	char	*namespace;
-
-	newcolm = (t_colm *)ft_memalloc(sizeof(t_colm));
-	namespace = ft_strdup(name);
-	if (!newcolm || !namespace)
-		return (NULL);
-	newcolm->N = namespace;
-	newcolm->R = root;
-	newcolm->L = root->L;
-	root->L->R = newcolm;
-	root->L = newcolm;
-	newcolm->U = newcolm;
-	newcolm->D = newcolm;
-	return (newcolm);
-}
-
-t_colo	*colo_init(char *name)
-{
-	t_colo	*newcolo;
-
-	newcolo = (t_colo *)ft_memalloc(sizeof(t_colo));
-	if (!newcolo)
-		return (NULL);
-	newcolo->N = name;
-	newcolo->L = newcolo;
-	newcolo->R = newcolo;
-	newcolo->U = newcolo;
-	newcolo->D = newcolo;
-	return (newcolo);
-}
-
-t_one	*one_init(t_entry *colhead, t_one *rowleft)
-{
-	t_one	*newone;
-
-	newone = (t_one *)ft_memalloc(sizeof(t_one));
-	if (!newone)
-		return (NULL);
-	if (rowleft == NULL)
-	{
-		newone->L = newone;
-		newone->R = newone;
-	}
-	else
-	{
-		newone->L = rowleft;
-		newone->R = rowleft->R;
-		rowleft->R->L = newone;
-		rowleft->R = newone;
-	}
-	newone->D = colhead;
-	newone->U = colhead->U;
-	colhead->U->D = newone;
-	colhead->U = newone;
-	colhead->S++;
-	newone->C = colhead;
-	return (newone);
-}
-
-t_colm	*ith(t_root *root, int i)
-{
-	int		j;
-	t_colm	*ret;
-
-	j = 0;
-	ret = root->R;
-	while (j < i)
-	{
-		ret = ret->R;
-		j++;
-	}
-	return (ret);
-}
-
-void	print_solution(t_one **solution, int k, int sqr)
-{
-	int		i;
-	char	str[sqr * (sqr + 1) + 1];
-	char	name;
-	int		loc;
-
-	ft_memset(str, '.', sqr * (sqr + 1));
-	str[sqr * (sqr + 1)] = '\0';
-	i = -1;
-	while (++i < k)
-	{
-		name = solution[i]->C->N[0];
-		solution[i] = solution[i]->R;
-		while (solution[i]->C->N[0] != name)
-		{
-			loc = ft_atoi(solution[i]->C->N);
-			str[loc + loc / sqr] = name;
-			solution[i] = solution[i]->R;
-		}
-	}
-	i = -1;
-	while (++i < sqr)
-		str[(sqr + 1) * (i + 1) - 1] = '\n';
-	ft_putstr(str);
-	return ;
-}
-
-void	colver(t_entry *col)
-{
-	char	*s;
-
-	s = col->N;
-	col->L->R = col->R;
-	col->R->L = col->L;
-	col = col->D;
-	while (col->N == NULL)
-	{
-		col = col->R;
-		while (ft_strcmp(col->C->N, s))
-		{
-			col->D->U = col->U;
-			col->U->D = col->D;
-			col->C->S -= 1;
-			col = col->R;
-		}
-		col = col->D;
-	}
-}
-
-void	callback(t_entry *col)
-{
-	char	*s;
-
-	s = col->N;
-	col = col->U;
-	while (col->N == NULL)
-	{
-		col = col->L;
-		while (ft_strcmp(col->C->N, s))
-		{
-			col->C->S += 1;
-			col->D->U = col;
-			col->U->D = col;
-			col = col->L;
-		}
-		col = col->U;
-	}
-	col->R->L = col;
-	col->L->R = col;
-}
-
 int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 {
 	static t_one	*solution[27];
@@ -180,35 +19,20 @@ int		pugilist(t_root *root, t_colo **box, int sqr, int k)
 	t_one			*a_rowish;
 	int				flag;
 
-	if (root->R->N == NULL)
-	{
-		print_solution(solution, k, sqr);
-		return (0);
-	}
 	to_remove = root->R;
 	colver(to_remove);
-	if (to_remove->D->N != NULL)
+	if (to_remove->N == NULL || to_remove->D->N != NULL)
 	{
+		(to_remove->N == NULL) ? print_solution(solution, k, sqr) : 0;
 		callback(to_remove);
-		return (1);
+		return (to_remove->N == NULL) ? 0 : 1;
 	}
 	a_rowish = to_remove->D;
 	while (a_rowish->N == NULL)
 	{
-		solution[k] = a_rowish;
-		a_rowish = a_rowish->R;
-		while (a_rowish->C->N[0] != solution[k]->C->N[0])
-		{
-			colver(a_rowish->C);
-			a_rowish = a_rowish->R;
-		}
+		callverback(a_rowish, TRUE, &colver, solution + k);
 		flag = pugilist(root, box, sqr, k + 1);
-		a_rowish = a_rowish->L;
-		while (a_rowish->C->N[0] != solution[k]->C->N[0])
-		{
-			callback(a_rowish->C);
-			a_rowish = a_rowish->L;
-		}
+		callverback(a_rowish, FALSE, &callback, solution + k);
 		if (flag == 0)
 			break ;
 		a_rowish = a_rowish->D;

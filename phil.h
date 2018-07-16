@@ -86,5 +86,14 @@ void	layer_of_eggs(t_piece *tetrimini);
 t_bool	death(t_piece *p1, t_piece *p2);
 void	fillit(int fd);
 t_piece	*parse_piece(char *square);
+t_root *root_init(void);
+t_colm *colm_init(t_root *root, char *name);
+t_colo *colo_init(char *name);
+t_one *one_init(t_entry *colhead, t_one *rowleft);
+t_colm *ith(t_root *root, int i);
+void print_solution(t_one **solution, int k, int sqr);
+void colver(t_entry *col);
+void callback(t_entry *col);
+void callverback(t_entry *row_entry, t_bool cover, void (*f)(t_entry *col), t_one **solutionk);
 
 #endif
