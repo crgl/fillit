@@ -5,18 +5,18 @@ This is an implementation of Donald Knuth's dancing links algorithm, performing 
 
 Example Piece:
 
-....
-##..
-.#..
-.#..
+....</br>
+##..</br>
+.#..</br>
+.#..</br>
 
 Output format:
 
-BBBBFFFF
-DDAAJJJJ
-CDDAHHEE
-CCCAGHHE
-NNNNGGGE
-LLIIPPMM
-KLLIOPPM
+BBBBFFFF</br>
+DDAAJJJJ</br>
+CDDAHHEE</br>
+CCCAGHHE</br>
+NNNNGGGE</br>
+LLIIPPMM</br>
+KLLIOPPM</br>
 KKKIOOOM
